@@ -46,14 +46,20 @@ client.on("messageCreate", (message) => {
 });
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
-  if (interaction.commandName === "fill") {
-    const params = getParams(interaction, ["color", "x", "y"]) as string[];
-    app.drawPixel(
-      getIdxByColorName(params[0]),
-      Number(params[1]),
-      Number(params[2])
-    )
-    await interaction.reply({ content: "Done!", ephemeral: true });
+  try {
+    if (interaction.commandName === "fill") {
+      const params = getParams(interaction, ["color", "x", "y"]) as string[];
+      app.drawPixel(
+        getIdxByColorName(params[0]),
+        Number(params[1]),
+        Number(params[2])
+      )
+      await interaction.reply({ content: "Done!", ephemeral: true });
+      return;
+    }
+    await interaction.reply({ content: "Invaild command", ephemeral: true });
+  } catch (e) {
+    console.log(e);
   }
 });
 

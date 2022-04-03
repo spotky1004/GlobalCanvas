@@ -33,8 +33,7 @@ registerCommands({
 
 client.on("ready", async () => {
   console.log("Ready!");
-  app.connectChannel(await client.channels.fetch("960127309187256360") as Discord.TextChannel);
-  app.connectChannel(await client.channels.fetch("960193336097013760") as Discord.TextChannel);
+  app.connectChannel(await client.channels.fetch("960237293619265558") as Discord.TextChannel);
 });
 
 client.on("messageCreate", (message) => {

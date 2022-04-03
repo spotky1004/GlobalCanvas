@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "tsc --build && node --no-deprecation ./dist/index.js",
+    "start": "node --no-deprecation ./dist/index.js",
+    "build": "tsc --build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "spotky1004",

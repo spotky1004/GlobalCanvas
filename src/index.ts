@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import Discord from "Discord.js";
+import Discord from "discord.js";
 import App from "./App.js";
 import * as commands from "./commands/index.js";
 import registerCommands from "./registerCommands.js";

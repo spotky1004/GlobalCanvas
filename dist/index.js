@@ -31,8 +31,7 @@ registerCommands({
 });
 client.on("ready", async () => {
     console.log("Ready!");
-    app.connectChannel(await client.channels.fetch("960127309187256360"));
-    app.connectChannel(await client.channels.fetch("960193336097013760"));
+    app.connectChannel(await client.channels.fetch("960237293619265558"));
 });
 client.on("messageCreate", (message) => {
     var _a;
@@ -46,10 +45,17 @@ client.on("messageCreate", (message) => {
 client.on("interactionCreate", async (interaction) => {
     if (!interaction.isCommand())
         return;
-    if (interaction.commandName === "fill") {
-        const params = getParams(interaction, ["color", "x", "y"]);
-        app.drawPixel(getIdxByColorName(params[0]), Number(params[1]), Number(params[2]));
-        await interaction.reply({ content: "Done!", ephemeral: true });
+    try {
+        if (interaction.commandName === "fill") {
+            const params = getParams(interaction, ["color", "x", "y"]);
+            app.drawPixel(getIdxByColorName(params[0]), Number(params[1]), Number(params[2]));
+            await interaction.reply({ content: "Done!", ephemeral: true });
+            return;
+        }
+        await interaction.reply({ content: "Invaild command", ephemeral: true });
+    }
+    catch (e) {
+        console.log(e);
     }
 });
 function getParams(interaction, toGet) {

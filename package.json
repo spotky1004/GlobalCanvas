@@ -6,7 +6,6 @@
   "type": "module",
   "scripts": {
     "start": "node --no-deprecation ./dist/index.js",
-    "build": "tsc --build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "spotky1004",

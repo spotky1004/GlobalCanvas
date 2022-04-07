@@ -1,11 +1,13 @@
 import Discord from "discord.js";
 import DisplayCanvas from "./DisplayCanvas.js";
+import SaveManager, { Collection } from "./SaveManager.js";
 
 interface AppOptions {
   size: {
     width: number;
     height: number;
   };
+  collection: Collection;
 }
 interface ConnectedChannel {
   guildId: string;
@@ -14,27 +16,36 @@ interface ConnectedChannel {
 }
 
 class App {
+  size: { width: number; height: number; };
   pixels: number[][];
   canvas: DisplayCanvas;
   messageOptions: Discord.MessageOptions;
   connectedChannels: ConnectedChannel[];
+  saveManager: SaveManager;
+
   constructor(options: AppOptions) {
-    this.pixels = new Array(options.size.height).fill(null).map(_ => new Array(options.size.width).fill(-1));
+    this.size = options.size;
+    this.pixels = new Array(this.size.height).fill(null).map(_ => new Array(this.size.width).fill(-1));
     this.canvas = new DisplayCanvas(options.size, 10);
     this.messageOptions = {};
     this.connectedChannels = [];
+    this.saveManager = new SaveManager(this, options.collection);
 
     this.init();
   }
-
-  loadData(colorIdxMatrix: number[][]) {
-    this.pixels = [...colorIdxMatrix].map(row => [...row]);
+  
+  async init() {
+    // Load pixels
+    const pixels = await this.saveManager.loadPixels();
+    this.pixels = [...pixels].map(row => [...row]);
     this.canvas.loadData(this.pixels);
+    // Update message
     this.updateMessageOptions();
+    return true;
   }
 
-  init() {
-    this.updateMessageOptions();
+  async save() {
+    this.saveManager.savePixels();
   }
 
   async updateMessageOptions() {

@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "start-dev": "node --no-deprecation ./dist/index.js",
     "start": "npm i && node --no-deprecation ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,6 +17,7 @@
     "@types/color-name": "^1.1.1",
     "canvas": "^2.9.1",
     "color-name": "^1.1.4",
+    "deepcopy": "^2.1.0",
     "discord-api-types": "^0.30.0",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",

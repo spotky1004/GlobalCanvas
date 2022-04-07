@@ -1,5 +1,5 @@
 import canvas from "canvas";
-import { getColorByIdx } from "./colors.js";
+import { getColorByIdx } from "../colors.js";
 class DisplayCanvas {
     constructor(size, canvasScale) {
         this.canvasScale = canvasScale;

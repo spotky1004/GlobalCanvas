@@ -1,11 +1,11 @@
 var _a, _b;
 import dotenv from "dotenv";
 import Discord from "discord.js";
-import App from "./App.js";
+import App from "./class/App.js";
 import * as commands from "./commands/index.js";
 import registerCommands from "./registerCommands.js";
 import { getIdxByColorName } from "./colors.js";
-import * as db from "./db.js";
+import collection from "./db.js";
 dotenv.config();
 const TOKEN = process.env.TOKEN;
 const client = new Discord.Client({
@@ -20,9 +20,9 @@ const size = {
     height: Number((_b = process.env.HEIGHT) !== null && _b !== void 0 ? _b : "0")
 };
 const app = new App({
-    size
+    size,
+    collection
 });
-app.loadData(await db.loadPixels(size));
 registerCommands({
     clientId: process.env.CLIENT_ID,
     guildId: "695367502045249606",
@@ -67,7 +67,7 @@ function getParams(interaction, toGet) {
     }
     return params;
 }
-setInterval(async () => {
-    await db.savePixels(app.pixels);
+setInterval(() => {
+    app.save();
 }, 10000);
 client.login(TOKEN);

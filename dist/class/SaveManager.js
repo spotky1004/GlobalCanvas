@@ -5,6 +5,7 @@ function matrix2String(matrix) {
 function string2Matrix(data) {
     return data.split("|").map(v => v.split(",").map(v => Number(v)));
 }
+const getUserDocumentId = (id) => `u_${id}`;
 class SaveManager {
     constructor(app, collection) {
         this.app = app;
@@ -20,7 +21,7 @@ class SaveManager {
         }
         return data;
     }
-    async insertDocument(id, data) {
+    async updateDocument(id, data) {
         const result = await this.collection.updateOne({ _id: id }, { $set: data }, { upsert: true });
         return result.acknowledged;
     }
@@ -34,9 +35,19 @@ class SaveManager {
     }
     async savePixels() {
         const pixels = this.app.pixels;
-        return await this.insertDocument("canvas", {
+        return await this.updateDocument("canvas", {
             pixels: matrix2String(pixels)
         });
+    }
+    async loadUser(id) {
+        const defaultData = {
+            id,
+            lastFill: 0
+        };
+        this.getDocumnet(getUserDocumentId(id), defaultData);
+    }
+    async saveUser(id, data) {
+        this.updateDocument(getUserDocumentId(id), data);
     }
 }
 export default SaveManager;

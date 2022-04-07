@@ -32,7 +32,7 @@ class SaveManager {
     return data;
   }
 
-  private async insertDocument(id: string, data: {[key: string]: any}) {
+  private async updateDocument(id: string, data: {[key: string]: any}) {
     const result = await this.collection.updateOne(
       { _id: id },
       { $set: data },
@@ -52,7 +52,7 @@ class SaveManager {
 
   async savePixels() {
     const pixels = this.app.pixels;
-    return await this.insertDocument("canvas", {
+    return await this.updateDocument("canvas", {
       pixels: matrix2String(pixels)
     });
   }

@@ -34,7 +34,7 @@ class DisplayCanvas {
       const row = colorIdxMatrix[y];
       for (let x = 0; x < row.length; x++) {
         const colorIdx = row[x];
-        this.drawPixel(colorIdx, x, y);
+        this.fillPixel(colorIdx, x, y);
       }
     }
   }
@@ -42,7 +42,7 @@ class DisplayCanvas {
   /**
    * Return value means if the process was successful
    */
-  drawPixel(colorIdx: number, x: number, y: number) {
+  fillPixel(colorIdx: number, x: number, y: number) {
     const pixelColor = getColorByIdx(colorIdx);
     if (
       pixelColor === null ||

@@ -2,11 +2,15 @@ import Discord from "discord.js";
 import DisplayCanvas from "./DisplayCanvas.js";
 import SaveManager, { Collection } from "./SaveManager.js";
 
-interface AppOptions {
+interface AppConfig {
   size: {
     width: number;
     height: number;
   };
+  fillCooldown: number;
+}
+interface AppOptions {
+  config: AppConfig;
   collection: Collection;
 }
 interface ConnectedChannel {
@@ -16,7 +20,7 @@ interface ConnectedChannel {
 }
 
 class App {
-  size: { width: number; height: number; };
+  config: AppConfig;
   pixels: number[][];
   canvas: DisplayCanvas;
   messageOptions: Discord.MessageOptions;
@@ -24,9 +28,9 @@ class App {
   saveManager: SaveManager;
 
   constructor(options: AppOptions) {
-    this.size = options.size;
-    this.pixels = new Array(this.size.height).fill(null).map(_ => new Array(this.size.width).fill(-1));
-    this.canvas = new DisplayCanvas(options.size, 10);
+    this.config = options.config;
+    this.pixels = new Array(this.config.size.height).fill(null).map(_ => new Array(this.config.size.width).fill(-1));
+    this.canvas = new DisplayCanvas(this.config.size, 10);
     this.messageOptions = {};
     this.connectedChannels = [];
     this.saveManager = new SaveManager(this, options.collection);
@@ -91,8 +95,8 @@ class App {
     this.updateMessage(channelCache);
   }
 
-  drawPixel(colorIdx: number, x: number, y: number) {
-    const result = this.canvas.drawPixel(colorIdx, x, y);
+  fillPixel(colorIdx: number, x: number, y: number) {
+    const result = this.canvas.fillPixel(colorIdx, x, y);
     if (result) {
       this.pixels[y][x] = colorIdx;
       this.updateMessageOptions();

@@ -20,8 +20,11 @@ const size = {
     height: Number((_b = process.env.HEIGHT) !== null && _b !== void 0 ? _b : "0")
 };
 const app = new App({
-    size,
-    collection
+    config: {
+        size,
+        fillCooldown: 5 * 60 * 1000, // 5 minuts 
+    },
+    collection,
 });
 registerCommands({
     clientId: process.env.CLIENT_ID,
@@ -48,7 +51,7 @@ client.on("interactionCreate", async (interaction) => {
     try {
         if (interaction.commandName === "fill") {
             const params = getParams(interaction, ["color", "x", "y"]);
-            app.drawPixel(getIdxByColorName(params[0]), Number(params[1]), Number(params[2]));
+            app.fillPixel(getIdxByColorName(params[0]), Number(params[1]), Number(params[2]));
             await interaction.reply({ content: "Done!", ephemeral: true });
             return;
         }

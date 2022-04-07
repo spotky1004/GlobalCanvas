@@ -3,11 +3,12 @@ import DisplayCanvas from "./DisplayCanvas.js";
 import SaveManager from "./SaveManager.js";
 class App {
     constructor(options) {
-        this.size = options.size;
-        this.pixels = new Array(this.size.height).fill(null).map(_ => new Array(this.size.width).fill(-1));
-        this.canvas = new DisplayCanvas(options.size, 10);
+        this.config = options.config;
+        this.pixels = new Array(this.config.size.height).fill(null).map(_ => new Array(this.config.size.width).fill(-1));
+        this.canvas = new DisplayCanvas(this.config.size, 10);
         this.messageOptions = {};
         this.connectedChannels = [];
+        this.userCaches = new UserCaches(this, { cacheCleanupTimeout: 100000 });
         this.saveManager = new SaveManager(this, options.collection);
         this.init();
     }
@@ -60,8 +61,8 @@ class App {
         this.connectedChannels.push(channelCache);
         this.updateMessage(channelCache);
     }
-    drawPixel(colorIdx, x, y) {
-        const result = this.canvas.drawPixel(colorIdx, x, y);
+    fillPixel(colorIdx, x, y) {
+        const result = this.canvas.fillPixel(colorIdx, x, y);
         if (result) {
             this.pixels[y][x] = colorIdx;
             this.updateMessageOptions();

@@ -17,14 +17,14 @@ class DisplayCanvas {
             const row = colorIdxMatrix[y];
             for (let x = 0; x < row.length; x++) {
                 const colorIdx = row[x];
-                this.drawPixel(colorIdx, x, y);
+                this.fillPixel(colorIdx, x, y);
             }
         }
     }
     /**
      * Return value means if the process was successful
      */
-    drawPixel(colorIdx, x, y) {
+    fillPixel(colorIdx, x, y) {
         const pixelColor = getColorByIdx(colorIdx);
         if (pixelColor === null ||
             x < 0 || x >= this.size.width ||

@@ -94,6 +94,7 @@ class User {
           new Discord.MessageAttachment(this.app.canvas.getImage(range.from, range.to), "canvas.png")
         ]
       });
+      this.app.logger.addZoomLog(interaction.user.id, params.x, params.y, params.width, params.height);
     } else {
       this.replyInteraction(interaction, {
         content: "Invaild zoom range!"

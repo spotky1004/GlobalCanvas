@@ -9,6 +9,8 @@ class Guild {
     }
     async connectChannelWithInteraction(interaction) {
         var _a;
+        if (!(interaction.inGuild() && interaction.guild && interaction.channel))
+            return;
         const author = await ((_a = interaction.guild) === null || _a === void 0 ? void 0 : _a.members.fetch(interaction.user.id));
         if (typeof author === "undefined") {
             interaction.reply({
@@ -38,6 +40,7 @@ class Guild {
             content: "Done!",
             ephemeral: true
         });
+        this.app.logger.addConnectLog(interaction.user.id, interaction.guildId, channel.id);
         return;
     }
     async connectChannel(channel) {

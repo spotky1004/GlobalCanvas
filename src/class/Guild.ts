@@ -25,6 +25,8 @@ class Guild {
   }
 
   async connectChannelWithInteraction(interaction: Discord.CommandInteraction) {
+    if (!(interaction.inGuild() && interaction.guild && interaction.channel)) return;
+
     const author = await interaction.guild?.members.fetch(interaction.user.id);
 
     if (typeof author === "undefined") {
@@ -61,6 +63,7 @@ class Guild {
       content: "Done!",
       ephemeral: true
     });
+    this.app.logger.addConnectLog(interaction.user.id, interaction.guildId, channel.id);
     return;
   }
 

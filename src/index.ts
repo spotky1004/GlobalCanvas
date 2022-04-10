@@ -4,7 +4,6 @@ import App from "./class/App.js";
 import * as commands from "./commands/index.js";
 import registerCommands from "./registerCommands.js";
 import collection from "./db.js";
-import getSlashParams from "./util/getSlashParams.js";
 
 dotenv.config();
 const TOKEN = process.env.TOKEN as string;

@@ -35,18 +35,20 @@ class DisplayCanvas {
         this.ctx.fillRect(x * canvasScale, y * canvasScale, canvasScale, canvasScale);
         return true;
     }
+    isGetImageRangeVaild(from = { x: 0, y: 0 }, to = { x: this.size.width - 1, y: this.size.height - 1 }) {
+        return (0 <= from.x && from.x < this.size.width &&
+            0 <= from.y && from.y < this.size.height &&
+            0 <= to.x && to.x < this.size.width &&
+            0 <= to.y && to.y < this.size.height &&
+            from.x < to.x && from.y < to.y);
+    }
     getImage(from = { x: 0, y: 0 }, to = { x: this.size.width - 1, y: this.size.height - 1 }) {
         const canvasScale = this.canvasScale;
         const size = {
             width: to.x - from.x,
             height: to.y - from.y
         };
-        const isRangeVaild = 0 <= from.x && from.x < this.size.width &&
-            0 <= from.y && from.y < this.size.height &&
-            0 <= to.x && to.x < this.size.width &&
-            0 <= to.y && to.y < this.size.height &&
-            from.x < to.x && from.y < to.y;
-        if (isRangeVaild) {
+        if (this.isGetImageRangeVaild(from, to)) {
             const tmpCanvas = canvas.createCanvas(size.width * canvasScale, size.height * canvasScale);
             tmpCanvas.getContext("2d").drawImage(this.canvas, from.x * canvasScale, from.y * canvasScale, size.width * canvasScale, size.height * canvasScale, 0, 0, size.width * canvasScale, size.height * canvasScale);
             return tmpCanvas.toBuffer();

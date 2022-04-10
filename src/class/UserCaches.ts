@@ -1,5 +1,5 @@
-import App from "./App.js";
 import User from "./User.js";
+import type App from "./App.js";
 
 interface UserCachesOptions {
   cacheCleanupTimeout?: number;

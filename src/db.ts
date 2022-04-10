@@ -9,9 +9,9 @@ await client.connect();
 const db = client.db(dbName);
 
 const data = db.collection("data");
-const fillLog = db.collection("fill-log");
+const log = db.collection("fill-log");
 
 export {
   data,
-  fillLog
+  log
 };

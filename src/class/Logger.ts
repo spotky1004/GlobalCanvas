@@ -3,7 +3,7 @@ import type mongodb from "mongodb";
 
 type Collection = mongodb.Collection<mongodb.Document>;
 
-class FillLogger {
+class Logger {
   app: App;
   collection: Collection;
   loggingIdx: number | null;
@@ -53,8 +53,16 @@ class FillLogger {
   }
 
   addFillLog(userId: string, colorHex: string, x: number, y: number) {
-    this.logCache.push(`[Fill] ${colorHex} (${x}, ${y}) By ${userId}`);
+    this.logCache.push(`[Fill] ${colorHex} (${x}, ${y}) [By ${userId}]`);
+  }
+
+  addConnectLog(userId: string, guildId: string, channelId: string) {
+    this.logCache.push(`[Connect] Guild ${guildId} -> Channel ${channelId} [By ${userId}]`);
+  }
+
+  addZoomLog(userId: string, x: number, y: number, width: number, height: number) {
+    this.logCache.push(`[Zoom] x: ${x}, y: ${y}, width: ${width}, height: ${height} [By ${userId}]`);
   }
 }
 
-export default FillLogger;
+export default Logger;

@@ -2,7 +2,7 @@ import DisplayCanvas from "./DisplayCanvas.js";
 import UserCaches from "./UserCaches.js";
 import GuildCaches from "./GuildCaches.js";
 import SaveManager, { Collection } from "./SaveManager.js";
-import FillLogger from "./FillLogger.js";
+import Logger from "./Logger.js";
 import { getColorByIdx } from "../colors.js";
 
 interface AppConfig {
@@ -16,7 +16,7 @@ interface AppOptions {
   config: AppConfig;
   collections: {
     data: Collection;
-    fillLog: Collection;
+    log: Collection;
   };
 }
 
@@ -27,7 +27,7 @@ class App {
   userCaches: UserCaches;
   guildCaches: GuildCaches;
   saveManager: SaveManager;
-  fillLogger: FillLogger;
+  logger: Logger;
   saving: boolean;
 
   constructor(options: AppOptions) {
@@ -37,7 +37,7 @@ class App {
     this.userCaches = new UserCaches(this, { cacheCleanupTimeout: 100_000 });
     this.guildCaches = new GuildCaches(this);
     this.saveManager = new SaveManager(this, options.collections.data);
-    this.fillLogger = new FillLogger(this, options.collections.fillLog);
+    this.logger = new Logger(this, options.collections.log);
 
     this.saving = false;
 
@@ -65,7 +65,7 @@ class App {
     for (const id in this.guildCaches.cache) {
       await this.guildCaches.saveGuild(id);
     }
-    await this.fillLogger.save();
+    await this.logger.save();
 
     this.saving = false;
   }
@@ -77,7 +77,7 @@ class App {
       this.guildCaches.updateMessageOptions();
       const color = getColorByIdx(colorIdx);
       if (color !== null) {
-        this.fillLogger.addFillLog(authorId, color, x, y);
+        this.logger.addFillLog(authorId, color, x, y);
       }
     }
     return result;

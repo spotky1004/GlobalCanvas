@@ -4,7 +4,7 @@ import Discord from "discord.js";
 import App from "./class/App.js";
 import * as commands from "./commands/index.js";
 import registerCommands from "./registerCommands.js";
-import { data, fillLog } from "./db.js";
+import { data, log } from "./db.js";
 dotenv.config();
 const TOKEN = process.env.TOKEN;
 const client = new Discord.Client({
@@ -27,7 +27,7 @@ const app = new App({
     },
     collections: {
         data,
-        fillLog
+        log
     },
 });
 client.on("ready", async () => {

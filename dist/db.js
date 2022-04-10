@@ -7,5 +7,5 @@ const dbName = 'GlobalCanvas';
 await client.connect();
 const db = client.db(dbName);
 const data = db.collection("data");
-const fillLog = db.collection("fill-log");
-export { data, fillLog };
+const log = db.collection("fill-log");
+export { data, log };

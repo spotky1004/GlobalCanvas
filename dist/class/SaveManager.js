@@ -26,7 +26,7 @@ class SaveManager {
         return result.acknowledged;
     }
     async loadPixels() {
-        const size = this.app.size;
+        const size = this.app.config.size;
         const defaultPixels = new Array(size.height).fill(undefined).map(_ => new Array(size.width).fill(-1));
         const data = await this.getDocumnet("canvas", {
             pixels: matrix2String(defaultPixels)
@@ -44,10 +44,10 @@ class SaveManager {
             id,
             lastFill: 0
         };
-        this.getDocumnet(getUserDocumentId(id), defaultData);
+        return await this.getDocumnet(getUserDocumentId(id), defaultData);
     }
     async saveUser(id, data) {
-        this.updateDocument(getUserDocumentId(id), data);
+        return await this.updateDocument(getUserDocumentId(id), data);
     }
 }
 export default SaveManager;

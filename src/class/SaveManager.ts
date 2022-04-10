@@ -1,6 +1,6 @@
-import mongodb from "mongodb";
 import deepcopy from "deepcopy";
 import App from "./App.js";
+import type mongodb from "mongodb";
 import type { UserData } from "./User.js";
 import type { GuildData } from "./Guild.js";
 

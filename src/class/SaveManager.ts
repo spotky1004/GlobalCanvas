@@ -50,7 +50,13 @@ class SaveManager {
     const data = await this.getDocumnet("canvas", {
       pixels: matrix2String(defaultPixels)
     });
-    return string2Matrix(data.pixels);
+    const prevPixels = string2Matrix(data.pixels);
+    for (let y = 0; y < size.height; y++) {
+      for (let x = 0; x < size.height; x++) {
+        defaultPixels[y][x] = typeof prevPixels[y] !== "undefined" ? prevPixels[y][x] ?? -1 : -1;
+      }
+    }
+    return prevPixels;
   }
 
   async savePixels() {

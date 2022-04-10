@@ -27,12 +27,19 @@ class SaveManager {
         return result.acknowledged;
     }
     async loadPixels() {
+        var _a;
         const size = this.app.config.size;
         const defaultPixels = new Array(size.height).fill(undefined).map(_ => new Array(size.width).fill(-1));
         const data = await this.getDocumnet("canvas", {
             pixels: matrix2String(defaultPixels)
         });
-        return string2Matrix(data.pixels);
+        const prevPixels = string2Matrix(data.pixels);
+        for (let y = 0; y < size.height; y++) {
+            for (let x = 0; x < size.height; x++) {
+                defaultPixels[y][x] = typeof prevPixels[y] !== "undefined" ? (_a = prevPixels[y][x]) !== null && _a !== void 0 ? _a : -1 : -1;
+            }
+        }
+        return prevPixels;
     }
     async savePixels() {
         const pixels = this.app.pixels;

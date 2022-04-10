@@ -17,13 +17,13 @@ const data = new SlashCommandBuilder()
       .addChoices(choiceSets);
     return option;
   })
-  .addStringOption(option => 
+  .addNumberOption(option => 
     option
       .setName("x")
       .setDescription("x coordinate of the pixel")
       .setRequired(true)
   )
-  .addStringOption(option =>
+  .addNumberOption(option =>
     option
       .setName("y")
       .setDescription("y coordinate of the pixel")

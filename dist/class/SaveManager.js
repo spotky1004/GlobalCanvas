@@ -39,7 +39,7 @@ class SaveManager {
                 defaultPixels[y][x] = typeof prevPixels[y] !== "undefined" ? (_a = prevPixels[y][x]) !== null && _a !== void 0 ? _a : -1 : -1;
             }
         }
-        return prevPixels;
+        return defaultPixels;
     }
     async savePixels() {
         const pixels = this.app.pixels;

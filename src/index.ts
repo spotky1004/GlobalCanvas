@@ -49,9 +49,13 @@ client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
   const user = await app.userCaches.getUser(interaction.user.id);
   try {
-    if (interaction.commandName === "fill") {
-      user.fillPixel(interaction);
-      return;
+    switch (interaction.commandName) {
+      case "fill":
+        user.fillPixel(interaction);
+        return;
+      case "zoom":
+        user.zoomIn(interaction);
+        return;
     }
     await interaction.reply({ content: "Invaild command", ephemeral: true });
   } catch (e) {

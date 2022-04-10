@@ -1,6 +1,7 @@
 import getSlashParams from "../util/getSlashParams.js";
 import { getIdxByColorName } from "../colors.js";
 import discordCooldownFormat from "../util/discordCooldownFormat.js";
+import Discord from "discord.js";
 class User {
     constructor(app, data) {
         this.app = app;
@@ -22,8 +23,6 @@ class User {
         })
             .catch();
     }
-    getFormattedCooldown() {
-    }
     async fillPixel(interaction) {
         const params = getSlashParams(interaction, {
             color: { type: "string" },
@@ -33,7 +32,7 @@ class User {
         const time = new Date().getTime();
         const fillCooldown = this.app.config.fillCooldown;
         if (time - this.data.lastFill > fillCooldown) {
-            this.app.fillPixel(getIdxByColorName(params.color), params.x, params.y);
+            this.app.fillPixel(getIdxByColorName(params.color), params.x - 1, params.y - 1);
             this.data.lastFill = time;
             this.replyInteraction(interaction, {
                 content: "Done!"
@@ -47,4 +46,37 @@ class User {
             return;
         }
     }
+    async zoomIn(interaction) {
+        const params = getSlashParams(interaction, {
+            x: { type: "number" },
+            y: { type: "number" },
+            width: { type: "number" },
+            height: { type: "number" },
+        });
+        const range = {
+            from: {
+                x: params.x - 1,
+                y: params.y - 1
+            },
+            to: {
+                x: params.x + params.width,
+                y: params.y + params.height
+            }
+        };
+        if (this.app.canvas.isGetImageRangeVaild(range.from, range.to)) {
+            this.replyInteraction(interaction, {
+                content: "** **",
+                files: [
+                    new Discord.MessageAttachment(this.app.canvas.getImage(range.from, range.to), "canvas.png")
+                ]
+            });
+        }
+        else {
+            this.replyInteraction(interaction, {
+                content: "Invaild zoom range!"
+            });
+            return;
+        }
+    }
+}
 export default User;

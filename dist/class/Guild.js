@@ -44,12 +44,18 @@ class Guild {
         return;
     }
     async connectChannel(channel) {
-        const channelMessages = await channel.messages.fetch({ limit: 5 });
-        for (const [, message] of channelMessages) {
-            if (message.author.id === process.env.CLIENT_ID) {
-                message.delete().catch(e => e);
+        let errorOccured = false;
+        await channel.messages.fetch({ limit: 5 })
+            .then(channelMessages => {
+            for (const [, message] of channelMessages) {
+                if (message.author.id === process.env.CLIENT_ID) {
+                    message.delete().catch(e => e);
+                }
             }
-        }
+        })
+            .catch(_ => errorOccured = true);
+        if (errorOccured)
+            return;
         let wasSendMessageSuccess = false;
         const message = await channel.send("```\nLoading\n```")
             .then(message => {

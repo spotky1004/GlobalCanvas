@@ -1,5 +1,6 @@
 import Discord from "discord.js";
 import DisplayCanvas from "./DisplayCanvas.js";
+import UserCaches from "./UserCaches.js";
 import SaveManager, { Collection } from "./SaveManager.js";
 
 interface AppConfig {
@@ -25,6 +26,7 @@ class App {
   canvas: DisplayCanvas;
   messageOptions: Discord.MessageOptions;
   connectedChannels: ConnectedChannel[];
+  userCaches: UserCaches;
   saveManager: SaveManager;
 
   constructor(options: AppOptions) {
@@ -33,6 +35,7 @@ class App {
     this.canvas = new DisplayCanvas(this.config.size, 10);
     this.messageOptions = {};
     this.connectedChannels = [];
+    this.userCaches = new UserCaches(this, { cacheCleanupTimeout: 100_000 });
     this.saveManager = new SaveManager(this, options.collection);
 
     this.init();

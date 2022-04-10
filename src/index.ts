@@ -3,7 +3,6 @@ import Discord from "discord.js";
 import App from "./class/App.js";
 import * as commands from "./commands/index.js";
 import registerCommands from "./registerCommands.js";
-import { getIdxByColorName } from "./colors.js";
 import collection from "./db.js";
 
 dotenv.config();
@@ -48,15 +47,10 @@ client.on("messageCreate", (message) => {
 });
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
+  const user = await app.userCaches.getUser(interaction.user.id);
   try {
     if (interaction.commandName === "fill") {
-      const params = getParams(interaction, ["color", "x", "y"]) as string[];
-      app.fillPixel(
-        getIdxByColorName(params[0]),
-        Number(params[1]),
-        Number(params[2])
-      )
-      await interaction.reply({ content: "Done!", ephemeral: true });
+      user.fillPixel(interaction);
       return;
     }
     await interaction.reply({ content: "Invaild command", ephemeral: true });
@@ -64,15 +58,6 @@ client.on("interactionCreate", async (interaction) => {
     console.log(e);
   }
 });
-
-function getParams(interaction: Discord.Interaction<Discord.CacheType>, toGet: string[]) {
-  const params: (string | number | boolean | undefined)[] = [];
-  const options = (interaction as any).options as Omit<Discord.CommandInteractionOptionResolver<Discord.CacheType>, "getMessage" | "getFocused">;
-  for (let i = 0; i < toGet.length; i++) {
-    params.push(options.get(toGet[i])?.value);
-  }
-  return params;
-}
 
 setInterval(() => {
   app.save();

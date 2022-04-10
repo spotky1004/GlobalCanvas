@@ -1,5 +1,6 @@
 import Discord from "discord.js";
 import DisplayCanvas from "./DisplayCanvas.js";
+import UserCaches from "./UserCaches.js";
 import SaveManager from "./SaveManager.js";
 class App {
     constructor(options) {

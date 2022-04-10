@@ -23,7 +23,7 @@ const size = {
 const app = new App({
     config: {
         size,
-        fillCooldown: 1000, // 5 minuts 
+        fillCooldown: 5 * 60 * 1000, // 5 minuts 
     },
     collections: {
         data,

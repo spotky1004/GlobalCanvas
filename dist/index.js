@@ -5,7 +5,6 @@ import App from "./class/App.js";
 import * as commands from "./commands/index.js";
 import registerCommands from "./registerCommands.js";
 import collection from "./db.js";
-import getSlashParams from "./util/getSlashParams.js";
 dotenv.config();
 const TOKEN = process.env.TOKEN;
 const client = new Discord.Client({
@@ -30,13 +29,21 @@ const app = new App({
 });
 client.on("ready", async () => {
     const guilds = await client.guilds.fetch();
-    guilds.each((guild) => {
+    guilds.each(async (guild) => {
+        const guildId = guild.id;
         registerCommands({
             clientId: process.env.CLIENT_ID,
-            guildId: guild.id,
+            guildId,
             commands: Object.values(commands).map(v => v.toJSON()),
             token: TOKEN
         });
+        const guildCache = await app.guildCaches.getGuild(guildId);
+        if (guildCache.data.connectedChannelId !== "-1") {
+            const channel = await client.channels.fetch(guildCache.data.connectedChannelId);
+            if (channel !== null && channel.type === "GUILD_TEXT") {
+                guildCache.connectChannel(channel);
+            }
+        }
     });
     console.log("Ready!");
 });
@@ -52,13 +59,12 @@ client.on("messageCreate", (message) => {
     var _a;
     if (message.author.id === ((_a = client.user) === null || _a === void 0 ? void 0 : _a.id))
         return;
-    const isConnectedChannel = null !== app.connectedChannels.find(connectedChannel => message.channelId === connectedChannel.id);
-    if (isConnectedChannel) {
+    const connectedChannel = app.guildCaches.getConnectedChannels().find(connectedChannel => message.channelId === connectedChannel.id);
+    if (connectedChannel) {
         message.delete();
     }
 });
 client.on("interactionCreate", async (interaction) => {
-    var _a;
     if (!interaction.isCommand())
         return;
     const user = await app.userCaches.getUser(interaction.user.id);
@@ -71,23 +77,9 @@ client.on("interactionCreate", async (interaction) => {
                 user.zoomIn(interaction);
                 return;
             case "connectchannel":
-                if (interaction.inGuild() && interaction.channel) {
-                    const author = await ((_a = interaction.guild) === null || _a === void 0 ? void 0 : _a.members.fetch(interaction.user.id));
-                    if (author === null || author === void 0 ? void 0 : author.permissions.has("MANAGE_CHANNELS")) {
-                        const params = getSlashParams(interaction, {
-                            channel: { type: "channel" }
-                        });
-                        app.connectChannel(params.channel);
-                        interaction.reply({
-                            content: "Done!",
-                            ephemeral: true
-                        });
-                    }
-                    else {
-                        interaction.reply({
-                            content: "MANAGE_CHANNELS permission is required to use this command!"
-                        });
-                    }
+                if (interaction.inGuild() && interaction.guild && interaction.channel) {
+                    const guildCache = await app.guildCaches.getGuild(interaction.guild.id);
+                    guildCache.connectChannelWithInteraction(interaction);
                 }
                 else {
                     interaction.reply({

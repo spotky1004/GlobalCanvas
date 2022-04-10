@@ -2,6 +2,7 @@ import mongodb from "mongodb";
 import deepcopy from "deepcopy";
 import App from "./App.js";
 import type { UserData } from "./User.js";
+import type { GuildData } from "./Guild.js";
 
 export type Collection = mongodb.Collection<mongodb.Document>;
 
@@ -12,6 +13,7 @@ function string2Matrix(data: string) {
   return data.split("|").map(v => v.split(",").map(v => Number(v)));
 }
 const getUserDocumentId = (id: string) => `u_${id}`;
+const getGuildDocumentId = (id: string) => `g_${id}`;
 
 class SaveManager {
   app: App;
@@ -68,6 +70,18 @@ class SaveManager {
 
   async saveUser(id: string, data: UserData) {
     return await this.updateDocument(getUserDocumentId(id), data);
+  }
+
+  async loadGuild(id: string) {
+    const defaultData: GuildData = {
+      id,
+      connectedChannelId: "-1"
+    };
+    return await this.getDocumnet(getGuildDocumentId(id), defaultData);
+  }
+
+  async saveGuild(id: string, data: GuildData) {
+    return await this.updateDocument(getGuildDocumentId(id), data);
   }
 }
 

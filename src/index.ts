@@ -30,13 +30,22 @@ const app = new App({
 });
 client.on("ready", async () => {
   const guilds = await client.guilds.fetch();
-  guilds.each((guild) => {
+  guilds.each(async (guild) => {
+    const guildId = guild.id;
     registerCommands({
       clientId: process.env.CLIENT_ID as string,
-      guildId: guild.id,
+      guildId,
       commands: Object.values(commands).map(v => v.toJSON()),
       token: TOKEN
     });
+
+    const guildCache = await app.guildCaches.getGuild(guildId);
+    if (guildCache.data.connectedChannelId !== "-1") {
+      const channel = await client.channels.fetch(guildCache.data.connectedChannelId);
+      if (channel !== null && channel.type === "GUILD_TEXT") {
+        guildCache.connectChannel(channel);
+      }
+    }
   });
   console.log("Ready!");
 });
@@ -52,8 +61,8 @@ client.on("guildCreate", async (guild) => {
 
 client.on("messageCreate", (message) => {
   if (message.author.id === client.user?.id) return;
-  const isConnectedChannel = null !== app.connectedChannels.find(connectedChannel => message.channelId === connectedChannel.id);
-  if (isConnectedChannel) {
+  const connectedChannel = app.guildCaches.getConnectedChannels().find(connectedChannel => message.channelId === connectedChannel.id);
+  if (connectedChannel) {
     message.delete();
   }
 });
@@ -69,23 +78,9 @@ client.on("interactionCreate", async (interaction) => {
         user.zoomIn(interaction);
         return;
       case "connectchannel":
-        if (interaction.inGuild() && interaction.channel) {
-          const author = await interaction.guild?.members.fetch(interaction.user.id);
-          
-          if (author?.permissions.has("MANAGE_CHANNELS")) {
-            const params = getSlashParams(interaction, {
-              channel: { type: "channel" }
-            });
-            app.connectChannel(params.channel as Discord.TextChannel);
-            interaction.reply({
-              content: "Done!",
-              ephemeral: true
-            })
-          } else {
-            interaction.reply({
-              content: "MANAGE_CHANNELS permission is required to use this command!"
-            });
-          }
+        if (interaction.inGuild() && interaction.guild && interaction.channel) {
+          const guildCache = await app.guildCaches.getGuild(interaction.guild.id);
+          guildCache.connectChannelWithInteraction(interaction);
         } else {
           interaction.reply({
             content: "This command can only be used in guilds."

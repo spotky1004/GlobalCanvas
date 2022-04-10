@@ -6,6 +6,7 @@ function string2Matrix(data) {
     return data.split("|").map(v => v.split(",").map(v => Number(v)));
 }
 const getUserDocumentId = (id) => `u_${id}`;
+const getGuildDocumentId = (id) => `g_${id}`;
 class SaveManager {
     constructor(app, collection) {
         this.app = app;
@@ -48,6 +49,16 @@ class SaveManager {
     }
     async saveUser(id, data) {
         return await this.updateDocument(getUserDocumentId(id), data);
+    }
+    async loadGuild(id) {
+        const defaultData = {
+            id,
+            connectedChannelId: "-1"
+        };
+        return await this.getDocumnet(getGuildDocumentId(id), defaultData);
+    }
+    async saveGuild(id, data) {
+        return await this.updateDocument(getGuildDocumentId(id), data);
     }
 }
 export default SaveManager;

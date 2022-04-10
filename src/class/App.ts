@@ -69,7 +69,7 @@ class App {
 
     const prevChannelIdx = this.connectedChannels.findIndex(ch => ch.guildId === guildId);
     if (prevChannelIdx !== -1) {
-      // this.connectedChannels.splice(prevChannelIdx, 1);
+      this.connectedChannels.splice(prevChannelIdx, 1);
     }
     
     const channelMessages = await channel.messages.fetch({ limit: 5 });

@@ -31,47 +31,60 @@ const app = new App({
     },
 });
 client.on("ready", async () => {
-    const guilds = await client.guilds.fetch();
-    guilds.each(async (guild) => {
-        const guildId = guild.id;
-        registerCommands({
-            clientId: process.env.CLIENT_ID,
-            guildId,
-            commands: Object.values(commands).map(v => v.toJSON()),
-            token: TOKEN
-        });
-        const guildCache = await app.guildCaches.getGuild(guildId);
-        if (guildCache.data.connectedChannelId !== "-1") {
-            const channel = await client.channels.fetch(guildCache.data.connectedChannelId);
-            if (channel !== null && channel.type === "GUILD_TEXT") {
-                guildCache.connectChannel(channel);
+    try {
+        const guilds = await client.guilds.fetch();
+        guilds.each(async (guild) => {
+            const guildId = guild.id;
+            registerCommands({
+                clientId: process.env.CLIENT_ID,
+                guildId,
+                commands: Object.values(commands).map(v => v.toJSON()),
+                token: TOKEN
+            });
+            const guildCache = await app.guildCaches.getGuild(guildId);
+            if (guildCache.data.connectedChannelId !== "-1") {
+                const channel = await client.channels.fetch(guildCache.data.connectedChannelId);
+                if (channel !== null && channel.type === "GUILD_TEXT") {
+                    guildCache.connectChannel(channel);
+                }
             }
-        }
-    });
+        });
+    }
+    catch (e) {
+        console.log(e);
+    }
     console.log("Ready!");
 });
 client.on("guildCreate", async (guild) => {
-    registerCommands({
-        clientId: process.env.CLIENT_ID,
-        guildId: guild.id,
-        commands: Object.values(commands).map(v => v.toJSON()),
-        token: TOKEN
-    });
+    try {
+        registerCommands({
+            clientId: process.env.CLIENT_ID,
+            guildId: guild.id,
+            commands: Object.values(commands).map(v => v.toJSON()),
+            token: TOKEN
+        });
+    }
+    catch (_a) { }
 });
 client.on("messageCreate", (message) => {
     var _a;
-    if (message.author.id === ((_a = client.user) === null || _a === void 0 ? void 0 : _a.id))
-        return;
-    const connectedChannel = app.guildCaches.getConnectedChannels().find(connectedChannel => message.channelId === connectedChannel.id);
-    if (connectedChannel) {
-        message.delete();
+    try {
+        if (message.author.id === ((_a = client.user) === null || _a === void 0 ? void 0 : _a.id))
+            return;
+        const connectedChannel = app.guildCaches.getConnectedChannels().find(connectedChannel => message.channelId === connectedChannel.id);
+        if (connectedChannel) {
+            message.delete();
+        }
+    }
+    catch (e) {
+        console.log(e);
     }
 });
 client.on("interactionCreate", async (interaction) => {
-    if (!interaction.isCommand())
-        return;
-    const user = await app.userCaches.getUser(interaction.user.id);
     try {
+        if (!interaction.isCommand())
+            return;
+        const user = await app.userCaches.getUser(interaction.user.id);
         switch (interaction.commandName) {
             case "fill":
                 user.fillPixel(interaction);

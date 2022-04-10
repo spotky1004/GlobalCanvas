@@ -7,7 +7,7 @@ export default function getSlashParams(interaction, toGet) {
     let params = {};
     for (const name in toGet) {
         if (toGet.hasOwnProperty(name)) {
-            const type = toGet[name];
+            const type = toGet[name].type;
             const param = options[paramGetFunctions[type]](name);
             params[name] = param;
         }

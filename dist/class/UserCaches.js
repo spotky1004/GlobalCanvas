@@ -11,9 +11,6 @@ class UserCaches {
         this.cache[id] = user;
         return user;
     }
-    async saveUser(id) {
-        return await this.app.saveManager.saveUser(id, this.cache[id].data);
-    }
     async getUser(id) {
         if (this.cache.hasOwnProperty(id)) {
             return this.cache[id];
@@ -21,6 +18,9 @@ class UserCaches {
         else {
             return await this.fetchUser(id);
         }
+    }
+    async saveUser(id) {
+        return await this.app.saveManager.saveUser(id, this.cache[id].data);
     }
     async cleanupCache() {
         const cacheCleanupTimeout = this.options.cacheCleanupTimeout;

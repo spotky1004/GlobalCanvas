@@ -22,17 +22,17 @@ class UserCaches {
     this.cache[id] = user;
     return user;
   }
-
-  async saveUser(id: string) {
-    return await this.app.saveManager.saveUser(id, this.cache[id].data);
-  }
-
+  
   async getUser(id: string) {
     if (this.cache.hasOwnProperty(id)) {
       return this.cache[id];
     } else {
       return await this.fetchUser(id);
     }
+  }
+
+  async saveUser(id: string) {
+    return await this.app.saveManager.saveUser(id, this.cache[id].data);
   }
 
   async cleanupCache() {

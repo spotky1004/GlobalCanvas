@@ -50,6 +50,7 @@ class User {
     const fillCooldown = this.app.config.fillCooldown;
     if (time - this.data.lastFill > fillCooldown) {
       this.app.fillPixel(
+        interaction.user.id,
         getIdxByColorName(params.color),
         params.x - 1,
         params.y - 1

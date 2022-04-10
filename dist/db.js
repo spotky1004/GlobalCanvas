@@ -6,5 +6,6 @@ const client = new MongoClient(uri);
 const dbName = 'GlobalCanvas';
 await client.connect();
 const db = client.db(dbName);
-const collection = db.collection("data");
-export default collection;
+const data = db.collection("data");
+const fillLog = db.collection("fill-log");
+export { data, fillLog };

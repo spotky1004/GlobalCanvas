@@ -32,7 +32,7 @@ class User {
         const time = new Date().getTime();
         const fillCooldown = this.app.config.fillCooldown;
         if (time - this.data.lastFill > fillCooldown) {
-            this.app.fillPixel(getIdxByColorName(params.color), params.x - 1, params.y - 1);
+            this.app.fillPixel(interaction.user.id, getIdxByColorName(params.color), params.x - 1, params.y - 1);
             this.data.lastFill = time;
             this.replyInteraction(interaction, {
                 content: "Done!"

@@ -2,6 +2,8 @@ import DisplayCanvas from "./DisplayCanvas.js";
 import UserCaches from "./UserCaches.js";
 import GuildCaches from "./GuildCaches.js";
 import SaveManager from "./SaveManager.js";
+import FillLogger from "./FillLogger.js";
+import { getColorByIdx } from "../colors.js";
 class App {
     constructor(options) {
         this.config = options.config;
@@ -9,7 +11,9 @@ class App {
         this.canvas = new DisplayCanvas(this.config.size, 10);
         this.userCaches = new UserCaches(this, { cacheCleanupTimeout: 100000 });
         this.guildCaches = new GuildCaches(this);
-        this.saveManager = new SaveManager(this, options.collection);
+        this.saveManager = new SaveManager(this, options.collections.data);
+        this.fillLogger = new FillLogger(this, options.collections.fillLog);
+        this.saving = false;
         this.init();
     }
     async init() {
@@ -21,19 +25,29 @@ class App {
         return true;
     }
     async save() {
-        this.saveManager.savePixels();
+        if (this.saving)
+            return;
+        this.saving = true;
+        await this.saveManager.savePixels();
+        await this.userCaches.cleanupCache();
         for (const id in this.userCaches.cache) {
-            this.userCaches.saveUser(id);
+            await this.userCaches.saveUser(id);
         }
         for (const id in this.guildCaches.cache) {
-            this.guildCaches.saveGuild(id);
+            await this.guildCaches.saveGuild(id);
         }
+        await this.fillLogger.save();
+        this.saving = false;
     }
-    fillPixel(colorIdx, x, y) {
+    fillPixel(authorId, colorIdx, x, y) {
         const result = this.canvas.fillPixel(colorIdx, x, y);
         if (result) {
             this.pixels[y][x] = colorIdx;
             this.guildCaches.updateMessageOptions();
+            const color = getColorByIdx(colorIdx);
+            if (color !== null) {
+                this.fillLogger.addFillLog(authorId, color, x, y);
+            }
         }
         return result;
     }

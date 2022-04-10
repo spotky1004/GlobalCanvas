@@ -2,6 +2,8 @@ import DisplayCanvas from "./DisplayCanvas.js";
 import UserCaches from "./UserCaches.js";
 import GuildCaches from "./GuildCaches.js";
 import SaveManager, { Collection } from "./SaveManager.js";
+import FillLogger from "./FillLogger.js";
+import { getColorByIdx } from "../colors.js";
 
 interface AppConfig {
   size: {
@@ -12,7 +14,10 @@ interface AppConfig {
 }
 interface AppOptions {
   config: AppConfig;
-  collection: Collection;
+  collections: {
+    data: Collection;
+    fillLog: Collection;
+  };
 }
 
 class App {
@@ -22,6 +27,8 @@ class App {
   userCaches: UserCaches;
   guildCaches: GuildCaches;
   saveManager: SaveManager;
+  fillLogger: FillLogger;
+  saving: boolean;
 
   constructor(options: AppOptions) {
     this.config = options.config;
@@ -29,7 +36,10 @@ class App {
     this.canvas = new DisplayCanvas(this.config.size, 10);
     this.userCaches = new UserCaches(this, { cacheCleanupTimeout: 100_000 });
     this.guildCaches = new GuildCaches(this);
-    this.saveManager = new SaveManager(this, options.collection);
+    this.saveManager = new SaveManager(this, options.collections.data);
+    this.fillLogger = new FillLogger(this, options.collections.fillLog);
+
+    this.saving = false;
 
     this.init();
   }
@@ -44,20 +54,31 @@ class App {
   }
 
   async save() {
-    this.saveManager.savePixels();
+    if (this.saving) return;
+    this.saving = true;
+
+    await this.saveManager.savePixels();
+    await this.userCaches.cleanupCache();
     for (const id in this.userCaches.cache) {
-      this.userCaches.saveUser(id);
+      await this.userCaches.saveUser(id);
     }
     for (const id in this.guildCaches.cache) {
-      this.guildCaches.saveGuild(id);
+      await this.guildCaches.saveGuild(id);
     }
+    await this.fillLogger.save();
+
+    this.saving = false;
   }
 
-  fillPixel(colorIdx: number, x: number, y: number) {
+  fillPixel(authorId: string, colorIdx: number, x: number, y: number) {
     const result = this.canvas.fillPixel(colorIdx, x, y);
     if (result) {
       this.pixels[y][x] = colorIdx;
       this.guildCaches.updateMessageOptions();
+      const color = getColorByIdx(colorIdx);
+      if (color !== null) {
+        this.fillLogger.addFillLog(authorId, color, x, y);
+      }
     }
     return result;
   }

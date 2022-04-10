@@ -4,7 +4,7 @@ import Discord from "discord.js";
 import App from "./class/App.js";
 import * as commands from "./commands/index.js";
 import registerCommands from "./registerCommands.js";
-import collection from "./db.js";
+import { data, fillLog } from "./db.js";
 dotenv.config();
 const TOKEN = process.env.TOKEN;
 const client = new Discord.Client({
@@ -23,9 +23,12 @@ const size = {
 const app = new App({
     config: {
         size,
-        fillCooldown: 5 * 60 * 1000, // 5 minuts 
+        fillCooldown: 1000, // 5 minuts 
     },
-    collection,
+    collections: {
+        data,
+        fillLog
+    },
 });
 client.on("ready", async () => {
     const guilds = await client.guilds.fetch();

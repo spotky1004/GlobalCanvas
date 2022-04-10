@@ -41,9 +41,19 @@ class DisplayCanvas {
             width: to.x - from.x,
             height: to.y - from.y
         };
-        const tmpCanvas = canvas.createCanvas(size.width * canvasScale, size.height * canvasScale);
-        tmpCanvas.getContext("2d").drawImage(this.canvas, from.x * canvasScale, from.y * canvasScale, size.width * canvasScale, size.height * canvasScale, 0, 0, size.width * canvasScale, size.height * canvasScale);
-        return tmpCanvas.toBuffer();
+        const isRangeVaild = 0 <= from.x && from.x < this.size.width &&
+            0 <= from.y && from.y < this.size.height &&
+            0 <= to.x && to.x < this.size.width &&
+            0 <= to.y && to.y < this.size.height &&
+            from.x < to.x && from.y < to.y;
+        if (isRangeVaild) {
+            const tmpCanvas = canvas.createCanvas(size.width * canvasScale, size.height * canvasScale);
+            tmpCanvas.getContext("2d").drawImage(this.canvas, from.x * canvasScale, from.y * canvasScale, size.width * canvasScale, size.height * canvasScale, 0, 0, size.width * canvasScale, size.height * canvasScale);
+            return tmpCanvas.toBuffer();
+        }
+        else {
+            return this.canvas.toBuffer();
+        }
     }
 }
 export default DisplayCanvas;

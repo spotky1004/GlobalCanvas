@@ -4,6 +4,7 @@ import App from "./class/App.js";
 import * as commands from "./commands/index.js";
 import registerCommands from "./registerCommands.js";
 import collection from "./db.js";
+import getSlashParams from "./util/getSlashParams.js";
 
 dotenv.config();
 const TOKEN = process.env.TOKEN as string;
@@ -11,7 +12,9 @@ const client = new Discord.Client({
   intents: [
     "GUILD_MESSAGES",
     "GUILD_MEMBERS",
-    "DIRECT_MESSAGES",
+    "GUILD_INTEGRATIONS",
+    "GUILD_PRESENCES",
+    "GUILDS"
   ]
 });
 const size = {
@@ -55,6 +58,30 @@ client.on("interactionCreate", async (interaction) => {
         return;
       case "zoom":
         user.zoomIn(interaction);
+        return;
+      case "connectchannel":
+        if (interaction.inGuild() && interaction.channel) {
+          const author = await interaction.guild?.members.fetch(interaction.user.id);
+          
+          if (author?.permissions.has("MANAGE_CHANNELS")) {
+            const params = getSlashParams(interaction, {
+              channel: { type: "channel" }
+            });
+            app.connectChannel(params.channel as Discord.TextChannel);
+            interaction.reply({
+              content: "Done!",
+              ephemeral: true
+            })
+          } else {
+            interaction.reply({
+              content: "MANAGE_CHANNELS permission is required to use this command!"
+            });
+          }
+        } else {
+          interaction.reply({
+            content: "This command can only be used in guilds."
+          });
+        }
         return;
     }
     await interaction.reply({ content: "Invaild command", ephemeral: true });

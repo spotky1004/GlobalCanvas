@@ -5,13 +5,16 @@ import App from "./class/App.js";
 import * as commands from "./commands/index.js";
 import registerCommands from "./registerCommands.js";
 import collection from "./db.js";
+import getSlashParams from "./util/getSlashParams.js";
 dotenv.config();
 const TOKEN = process.env.TOKEN;
 const client = new Discord.Client({
     intents: [
         "GUILD_MESSAGES",
         "GUILD_MEMBERS",
-        "DIRECT_MESSAGES",
+        "GUILD_INTEGRATIONS",
+        "GUILD_PRESENCES",
+        "GUILDS"
     ]
 });
 const size = {
@@ -45,6 +48,7 @@ client.on("messageCreate", (message) => {
     }
 });
 client.on("interactionCreate", async (interaction) => {
+    var _a;
     if (!interaction.isCommand())
         return;
     const user = await app.userCaches.getUser(interaction.user.id);
@@ -55,6 +59,31 @@ client.on("interactionCreate", async (interaction) => {
                 return;
             case "zoom":
                 user.zoomIn(interaction);
+                return;
+            case "connectchannel":
+                if (interaction.inGuild() && interaction.channel) {
+                    const author = await ((_a = interaction.guild) === null || _a === void 0 ? void 0 : _a.members.fetch(interaction.user.id));
+                    if (author === null || author === void 0 ? void 0 : author.permissions.has("MANAGE_CHANNELS")) {
+                        const params = getSlashParams(interaction, {
+                            channel: { type: "channel" }
+                        });
+                        app.connectChannel(params.channel);
+                        interaction.reply({
+                            content: "Done!",
+                            ephemeral: true
+                        });
+                    }
+                    else {
+                        interaction.reply({
+                            content: "MANAGE_CHANNELS permission is required to use this command!"
+                        });
+                    }
+                }
+                else {
+                    interaction.reply({
+                        content: "This command can only be used in guilds."
+                    });
+                }
                 return;
         }
         await interaction.reply({ content: "Invaild command", ephemeral: true });

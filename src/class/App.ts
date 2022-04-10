@@ -69,13 +69,15 @@ class App {
 
     const prevChannelIdx = this.connectedChannels.findIndex(ch => ch.guildId === guildId);
     if (prevChannelIdx !== -1) {
+      const channelToDisconnect = this.connectedChannels[prevChannelIdx];
+      await channelToDisconnect.message.channel.send("Disconnected").catch(e => e);
       this.connectedChannels.splice(prevChannelIdx, 1);
     }
     
     const channelMessages = await channel.messages.fetch({ limit: 5 });
     for (const [, message] of channelMessages) {
       if (message.author.id === process.env.CLIENT_ID) {
-        message.delete().catch();
+        message.delete().catch(e => e);
       }
     }
 

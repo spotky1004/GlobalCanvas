@@ -24,16 +24,19 @@ class User {
 
   async replyInteraction(interaction: Discord.CommandInteraction, messageOptions: Discord.MessageOptions | undefined) {
     if (this.messageInteraction !== null) {
-      await this.messageInteraction.deleteReply().catch();
+      await this.messageInteraction.deleteReply().catch(e => e);
       this.messageInteraction = null;
     }
     if (typeof messageOptions === "undefined") return;
-    interaction.reply(messageOptions)
+    interaction.reply({
+      ephemeral: true,
+      ...messageOptions,
+    })
       .then(_ => {
         // Set this.messageInteraction if reply was successful
         this.messageInteraction = interaction;
       })
-      .catch();
+      .catch(e => e);
   }
 
   async fillPixel(interaction: Discord.CommandInteraction) {

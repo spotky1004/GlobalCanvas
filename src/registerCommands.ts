@@ -13,7 +13,7 @@ export default function registerCommands(options: RegisterCommandsOptions) {
   const rest = new REST({ version: "9" }).setToken(options.token);
   
   rest.put(Routes.applicationGuildCommands(options.clientId, options.guildId), { body: options.commands })
-    .then(() => console.log("Register commands done!"))
+    .then(() => console.log(`Register commands done to guild: ${options.guildId}`))
     .catch(console.error);
 }
 

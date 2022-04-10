@@ -28,17 +28,26 @@ const app = new App({
   },
   collection,
 });
-
-registerCommands({
-  clientId: process.env.CLIENT_ID as string,
-  guildId: "695367502045249606",
-  commands: Object.values(commands).map(v => v.toJSON()),
-  token: TOKEN
+client.on("ready", async () => {
+  const guilds = await client.guilds.fetch();
+  guilds.each((guild) => {
+    registerCommands({
+      clientId: process.env.CLIENT_ID as string,
+      guildId: guild.id,
+      commands: Object.values(commands).map(v => v.toJSON()),
+      token: TOKEN
+    });
+  });
+  console.log("Ready!");
 });
 
-client.on("ready", async () => {
-  console.log("Ready!");
-  app.connectChannel(await client.channels.fetch("960237293619265558") as Discord.TextChannel);
+client.on("guildCreate", async (guild) => {
+  registerCommands({
+    clientId: process.env.CLIENT_ID as string,
+    guildId: guild.id,
+    commands: Object.values(commands).map(v => v.toJSON()),
+    token: TOKEN
+  });
 });
 
 client.on("messageCreate", (message) => {

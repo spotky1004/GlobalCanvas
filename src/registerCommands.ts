@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 
-interface RegisterCommandsOptions {
+export interface RegisterCommandsOptions {
   token: string;
   clientId: string;
   guildId: string;

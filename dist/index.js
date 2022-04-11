@@ -33,22 +33,11 @@ const app = new App({
 });
 client.on("ready", async () => {
     try {
-        const guilds = await client.guilds.fetch();
-        guilds.each(async (guild) => {
-            const guildId = guild.id;
-            registerCommands({
-                clientId: process.env.CLIENT_ID,
-                guildId,
-                commands,
-                token: TOKEN
-            });
-            const guildCache = await app.guildCaches.getGuild(guildId);
-            if (guildCache.data.connectedChannelId !== "-1") {
-                const channel = await client.channels.fetch(guildCache.data.connectedChannelId);
-                if (channel !== null && channel.type === "GUILD_TEXT") {
-                    guildCache.connectChannel(channel);
-                }
-            }
+        handlers.ready({
+            app,
+            client,
+            commands,
+            token: TOKEN
         });
     }
     catch (e) {

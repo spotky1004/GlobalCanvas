@@ -1,4 +1,3 @@
-import getSlashParams from "../util/getSlashParams.js";
 class Guild {
     constructor(app, guildCaches, data) {
         this.app = app;
@@ -12,6 +11,7 @@ class Guild {
         if (!(interaction.inGuild() && interaction.guild && interaction.channel))
             return;
         const author = await ((_a = interaction.guild) === null || _a === void 0 ? void 0 : _a.members.fetch(interaction.user.id));
+        const channel = interaction.channel;
         if (typeof author === "undefined") {
             interaction.reply({
                 content: "An unknown error occurred while connecting...",
@@ -26,15 +26,17 @@ class Guild {
             });
             return;
         }
+        if (channel.type !== "GUILD_TEXT") {
+            interaction.reply({
+                content: "Channel must be Text channel!",
+                ephemeral: true
+            });
+        }
         if (this.connectedChannel !== null &&
             this.connectedMessage !== null) {
             this.connectedMessage.delete().catch(e => e);
             this.connectedChannel.send("Disconnected").catch(e => e);
         }
-        const params = getSlashParams(interaction, {
-            channel: { type: "channel" }
-        });
-        const channel = params.channel;
         await this.connectChannel(channel);
         interaction.reply({
             content: "Done!",

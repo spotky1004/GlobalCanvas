@@ -1,4 +1,3 @@
-import getSlashParams from "../util/getSlashParams.js";
 import type GuildCaches from "./GuildCaches.js";
 import type App from "./App.js";
 import type Discord from "discord.js";
@@ -13,7 +12,7 @@ class Guild {
   app: App;
   guildCaches: GuildCaches;
   data: GuildData;
-  connectedChannel: Discord.TextChannel | null;
+  connectedChannel: Discord.GuildTextBasedChannel | null;
   connectedMessage: Discord.Message | null;
 
   constructor(app: App, guildCaches: GuildCaches, data: GuildData) {
@@ -28,6 +27,7 @@ class Guild {
     if (!(interaction.inGuild() && interaction.guild && interaction.channel)) return;
 
     const author = await interaction.guild?.members.fetch(interaction.user.id);
+    const channel = interaction.channel;
 
     if (typeof author === "undefined") {
       interaction.reply({
@@ -36,13 +36,18 @@ class Guild {
       });
       return;
     }
-
     if (!author?.permissions.has("MANAGE_CHANNELS")) {
       interaction.reply({
         content: "MANAGE_CHANNELS permission is required to use this command!",
         ephemeral: true
       });
       return;
+    }
+    if (channel.type !== "GUILD_TEXT") {
+      interaction.reply({
+        content: "Channel must be Text channel!",
+        ephemeral: true
+      });
     }
 
     if (
@@ -52,11 +57,6 @@ class Guild {
       this.connectedMessage.delete().catch(e => e);
       this.connectedChannel.send("Disconnected").catch(e => e);
     }
-
-    const params = getSlashParams(interaction, {
-      channel: { type: "channel" }
-    });
-    const channel = params.channel as Discord.TextChannel;
     await this.connectChannel(channel);
 
     interaction.reply({
@@ -67,7 +67,7 @@ class Guild {
     return;
   }
 
-  async connectChannel(channel: Discord.TextChannel) {
+  async connectChannel(channel: Discord.GuildTextBasedChannel) {
     let errorOccured = false;
     await channel.messages.fetch({ limit: 5 })
       .then(channelMessages => {

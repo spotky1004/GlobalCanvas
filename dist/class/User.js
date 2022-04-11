@@ -16,12 +16,18 @@ class User {
         }
         if (typeof messageOptions === "undefined")
             return;
-        interaction.reply(Object.assign({ ephemeral: true }, messageOptions))
+        await interaction.reply(Object.assign({ ephemeral: true }, messageOptions))
             .then(_ => {
             // Set this.messageInteraction if reply was successful
             this.messageInteraction = interaction;
         })
             .catch(e => e);
+    }
+    async editInteraction(interaction, messageOptions) {
+        await interaction.deferReply().catch(e => e);
+        if (typeof messageOptions === "undefined")
+            return;
+        await interaction.editReply(messageOptions).catch(e => e);
     }
     async fillPixel(interaction) {
         const params = getSlashParams(interaction, {

@@ -28,7 +28,7 @@ class User {
       this.messageInteraction = null;
     }
     if (typeof messageOptions === "undefined") return;
-    interaction.reply({
+    await interaction.reply({
       ephemeral: true,
       ...messageOptions,
     })
@@ -37,6 +37,12 @@ class User {
         this.messageInteraction = interaction;
       })
       .catch(e => e);
+  }
+
+  async editInteraction(interaction: Discord.CommandInteraction, messageOptions: Discord.MessageOptions | undefined) {
+    await interaction.deferReply().catch(e => e);
+    if (typeof messageOptions === "undefined") return;
+    await interaction.editReply(messageOptions).catch(e => e);
   }
 
   async fillPixel(interaction: Discord.CommandInteraction) {

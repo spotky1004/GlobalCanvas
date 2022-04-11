@@ -1,11 +1,11 @@
 var _a, _b;
-import dotenv from "dotenv";
+import env from "./env.js";
+env();
 import Discord from "discord.js";
 import App from "./class/App.js";
 import * as commands from "./commands/index.js";
 import registerCommands from "./registerCommands.js";
 import { data, log } from "./db.js";
-dotenv.config();
 const TOKEN = process.env.TOKEN;
 const client = new Discord.Client({
     intents: [

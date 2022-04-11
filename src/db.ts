@@ -1,9 +1,9 @@
 import { MongoClient } from 'mongodb';
-import dotenv from "dotenv";
-dotenv.config();
-const uri = `mongodb+srv://spotky1004:${process.env.MONGODB_PASSWORD}@cluster0.rlp2b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+import env from "./env.js";
+env();
+const uri = `mongodb+srv://${process.env.MONGODB_ID}:${process.env.MONGODB_PASSWORD}@cluster0.rlp2b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri);
-const dbName = 'GlobalCanvas';
+const dbName = process.env.MONGODB_DB_NAME;
 
 await client.connect();
 const db = client.db(dbName);

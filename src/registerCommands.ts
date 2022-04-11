@@ -16,4 +16,3 @@ export default function registerCommands(options: RegisterCommandsOptions) {
     .then(() => console.log(`Register commands done to guild: ${options.guildId}`))
     .catch(console.error);
 }
-

@@ -67,12 +67,18 @@ client.on("guildCreate", async (guild) => {
   } catch {}
 });
 
-client.on("messageCreate", (message) => {
+client.on("messageCreate", async (message) => {
   try {
     if (message.author.id === client.user?.id) return;
-    const connectedChannel = app.guildCaches.getConnectedChannels().find(connectedChannel => message.channelId === connectedChannel.id);
-    if (connectedChannel) {
-      message.delete();
+    if (message.inGuild()) {
+      const guildCache = await app.guildCaches.getGuild(message.guild.id);
+      const connectedChannel = guildCache.connectedChannel;
+      if (
+        connectedChannel !== null &&
+        connectedChannel.id === message.channelId
+      ) {
+        message.delete();
+      }
     }
   } catch (e) { console.log(e); }
 });

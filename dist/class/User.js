@@ -40,8 +40,9 @@ class User {
             return;
         }
         else {
+            const fillColldownLeft = this.data.lastFill - time + fillCooldown;
             this.replyInteraction(interaction, {
-                content: "Cooldown!\n" + discordCooldownFormat(time, fillCooldown)
+                content: "Cooldown!\n" + discordCooldownFormat(time, fillColldownLeft)
             });
             return;
         }

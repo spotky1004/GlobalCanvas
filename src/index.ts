@@ -2,7 +2,7 @@ import env from "./env.js";
 env();
 import Discord from "discord.js";
 import App from "./class/App.js";
-import * as commands from "./commands/index.js";
+import commands from "./commands/index.js";
 import registerCommands from "./registerCommands.js";
 import { data, log } from "./db.js";
 import * as handlers from "./handlers/index.js";
@@ -40,7 +40,7 @@ client.on("ready", async () => {
       registerCommands({
         clientId: process.env.CLIENT_ID as string,
         guildId,
-        commands: Object.values(commands).map(v => v.toJSON()),
+        commands,
         token: TOKEN
       });
   
@@ -61,7 +61,7 @@ client.on("guildCreate", async (guild) => {
     registerCommands({
       clientId: process.env.CLIENT_ID as string,
       guildId: guild.id,
-      commands: Object.values(commands).map(v => v.toJSON()),
+      commands,
       token: TOKEN
     });
   } catch {}

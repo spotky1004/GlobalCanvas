@@ -86,7 +86,7 @@ client.on("interactionCreate", async (interaction) => {
 setInterval(() => {
   app.save();
   if (client.user) {
-    client.user.setActivity(getRandomTrivia({ app }), {
+    client.user.setActivity(getRandomTrivia({ app, client }), {
       type: "WATCHING"
     });
   }

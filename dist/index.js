@@ -7,6 +7,7 @@ import commands from "./commands/index.js";
 import registerCommands from "./registerCommands.js";
 import { data, log } from "./db.js";
 import * as handlers from "./handlers/index.js";
+import getRandomTrivia from "./util/getRandomTrivia.js";
 const TOKEN = process.env.TOKEN;
 const client = new Discord.Client({
     intents: [
@@ -89,5 +90,10 @@ client.on("interactionCreate", async (interaction) => {
 });
 setInterval(() => {
     app.save();
+    if (client.user) {
+        client.user.setActivity(getRandomTrivia({ app }), {
+            type: "WATCHING"
+        });
+    }
 }, 10000);
 client.login(TOKEN);

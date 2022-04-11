@@ -7,7 +7,7 @@ class Logger {
   app: App;
   collection: Collection;
   loggingIdx: number | null;
-  logCache: string[];
+  logCache: [string, number][];
 
   constructor(app: App, collection: Collection) {
     this.app = app;
@@ -30,7 +30,8 @@ class Logger {
     if (this.loggingIdx === null) return;
     
     for (let i = 0; i < this.logCache.length; i++) {
-      await this.saveLog(this.logCache[i]);
+      const cache = this.logCache[i];
+      await this.saveLog(cache[0], cache[1]);
     }
     await this.collection.updateOne(
       { _id: "loggingIdx" },
@@ -40,10 +41,10 @@ class Logger {
     this.logCache = [];
   }
 
-  private async saveLog(toLog: string) {
+  private async saveLog(toLog: string, time: number) {
     if (this.loggingIdx === null) return;
 
-    const data = { data: toLog };
+    const data = { data: toLog, time };
     await this.collection.updateOne(
       { _id: this.loggingIdx.toString() },
       { $set: data },
@@ -52,16 +53,20 @@ class Logger {
     this.loggingIdx++;
   }
 
+  addLog(toLog: string) {
+    this.logCache.push([toLog, new Date().getTime()]);
+  }
+
   addFillLog(userId: string, colorHex: string, x: number, y: number) {
-    this.logCache.push(`[Fill] ${colorHex} (${x}, ${y}) [By ${userId}]`);
+    this.addLog(`[Fill] ${colorHex} (${x}, ${y}) [By ${userId}]`);
   }
 
   addConnectLog(userId: string, guildId: string, channelId: string) {
-    this.logCache.push(`[Connect] Guild ${guildId} -> Channel ${channelId} [By ${userId}]`);
+    this.addLog(`[Connect] Guild ${guildId} -> Channel ${channelId} [By ${userId}]`);
   }
 
   addZoomLog(userId: string, x: number, y: number, width: number, height: number) {
-    this.logCache.push(`[Zoom] x: ${x}, y: ${y}, width: ${width}, height: ${height} [By ${userId}]`);
+    this.addLog(`[Zoom] x: ${x}, y: ${y}, width: ${width}, height: ${height} [By ${userId}]`);
   }
 }
 

@@ -6,6 +6,7 @@ import App from "./class/App.js";
 import * as commands from "./commands/index.js";
 import registerCommands from "./registerCommands.js";
 import { data, log } from "./db.js";
+import * as handlers from "./handlers/index.js";
 const TOKEN = process.env.TOKEN;
 const client = new Discord.Client({
     intents: [
@@ -82,29 +83,12 @@ client.on("messageCreate", (message) => {
 });
 client.on("interactionCreate", async (interaction) => {
     try {
-        if (!interaction.isCommand())
-            return;
-        const user = await app.userCaches.getUser(interaction.user.id);
-        switch (interaction.commandName) {
-            case "fill":
-                user.fillPixel(interaction);
-                return;
-            case "zoom":
-                user.zoomIn(interaction);
-                return;
-            case "connectchannel":
-                if (interaction.inGuild() && interaction.guild && interaction.channel) {
-                    const guildCache = await app.guildCaches.getGuild(interaction.guild.id);
-                    guildCache.connectChannelWithInteraction(interaction);
-                }
-                else {
-                    interaction.reply({
-                        content: "This command can only be used in guilds."
-                    });
-                }
-                return;
+        if (interaction.isCommand()) {
+            const isCommandVaild = handlers.command(app, interaction);
+            if (!isCommandVaild) {
+                await interaction.reply({ content: "Invaild command", ephemeral: true });
+            }
         }
-        await interaction.reply({ content: "Invaild command", ephemeral: true });
     }
     catch (e) {
         console.log(e);

@@ -23,6 +23,8 @@ class Logger {
 
     if (gotDocument !== null) {
       this.loggingIdx = gotDocument.idx;
+    } else {
+      this.loggingIdx = 0;
     }
   }
 

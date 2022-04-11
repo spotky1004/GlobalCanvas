@@ -1,4 +1,4 @@
-var _a, _b;
+var _a, _b, _c;
 import env from "./env.js";
 env();
 import Discord from "discord.js";
@@ -24,7 +24,7 @@ const size = {
 const app = new App({
     config: {
         size,
-        fillCooldown: 3 * 60 * 1000, // 3 minuts 
+        fillCooldown: Number((_c = process.env.COOLDOWN) !== null && _c !== void 0 ? _c : 180000),
     },
     collections: {
         data,

@@ -24,7 +24,7 @@ const size = {
 const app = new App({
   config: {
     size,
-    fillCooldown: 3*60*1000, // 3 minuts 
+    fillCooldown: Number(process.env.COOLDOWN ?? 180000),
   },
   collections: {
     data,

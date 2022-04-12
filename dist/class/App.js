@@ -7,8 +7,8 @@ import { getColorByIdx } from "../colors.js";
 class App {
     constructor(options) {
         this.config = options.config;
-        this.pixels = new Array(this.config.size.height).fill(null).map(_ => new Array(this.config.size.width).fill(-1));
-        this.canvas = new DisplayCanvas(this.config.size, 10);
+        this.canvas = new Array(this.config.size.height).fill(null).map(_ => new Array(this.config.size.width).fill(-1));
+        this.displayCanvas = new DisplayCanvas(this.config.size, 10);
         this.userCaches = new UserCaches(this, { cacheCleanupTimeout: 100000 });
         this.guildCaches = new GuildCaches(this);
         this.saveManager = new SaveManager(this, options.collections.data);
@@ -18,9 +18,9 @@ class App {
     }
     async init() {
         // Load pixels
-        const pixels = await this.saveManager.loadPixels();
-        this.pixels = [...pixels].map(row => [...row]);
-        this.canvas.loadData(this.pixels);
+        const pixels = await this.saveManager.loadCanvas();
+        this.canvas = [...pixels].map(row => [...row]);
+        this.displayCanvas.loadData(this.canvas);
         this.guildCaches.updateMessageOptions();
         return true;
     }
@@ -28,7 +28,7 @@ class App {
         if (this.saving)
             return;
         this.saving = true;
-        await this.saveManager.savePixels();
+        await this.saveManager.saveCanvas();
         await this.userCaches.cleanupCache();
         for (const id in this.userCaches.cache) {
             await this.userCaches.saveUser(id);
@@ -40,9 +40,9 @@ class App {
         this.saving = false;
     }
     fillPixel(userId, guildId, colorIdx, x, y) {
-        const result = this.canvas.fillPixel(colorIdx, x, y);
+        const result = this.displayCanvas.fillPixel(colorIdx, x, y);
         if (result) {
-            this.pixels[y][x] = colorIdx;
+            this.canvas[y][x] = colorIdx;
             this.guildCaches.updateMessageOptions();
             const color = getColorByIdx(colorIdx);
             if (color !== null) {

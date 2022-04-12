@@ -39,7 +39,7 @@ class GuildCaches {
   }
 
   async updateMessageOptions() {
-    const attachment = new Discord.MessageAttachment(this.app.canvas.getImage(), "canvas.png");
+    const attachment = new Discord.MessageAttachment(this.app.displayCanvas.getImage(), "canvas.png");
     this.messageOptions = {
       content: "** **",
       files: [attachment]

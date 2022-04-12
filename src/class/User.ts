@@ -95,11 +95,11 @@ class User {
       }
     };
     
-    if (this.app.canvas.isGetImageRangeVaild(range.from, range.to)) {
+    if (this.app.displayCanvas.isGetImageRangeVaild(range.from, range.to)) {
       this.replyInteraction(interaction, {
         content: "** **",
         files: [
-          new Discord.MessageAttachment(this.app.canvas.getImage(range.from, range.to), "canvas.png")
+          new Discord.MessageAttachment(this.app.displayCanvas.getImage(range.from, range.to), "canvas.png")
         ]
       });
       this.app.logger.addLog("Zoom", {

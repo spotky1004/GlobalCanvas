@@ -29,7 +29,7 @@ class GuildCaches {
         return await this.app.saveManager.saveGuild(id, this.cache[id].data);
     }
     async updateMessageOptions() {
-        const attachment = new Discord.MessageAttachment(this.app.canvas.getImage(), "canvas.png");
+        const attachment = new Discord.MessageAttachment(this.app.displayCanvas.getImage(), "canvas.png");
         this.messageOptions = {
             content: "** **",
             files: [attachment]

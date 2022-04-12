@@ -26,25 +26,25 @@ class SaveManager {
         const result = await this.collection.updateOne({ _id: id }, { $set: data }, { upsert: true });
         return result.acknowledged;
     }
-    async loadPixels() {
+    async loadCanvas() {
         var _a;
         const size = this.app.config.size;
-        const defaultPixels = new Array(size.height).fill(undefined).map(_ => new Array(size.width).fill(-1));
+        const defaultCanvas = new Array(size.height).fill(undefined).map(_ => new Array(size.width).fill(-1));
         const data = await this.getDocumnet("canvas", {
-            pixels: matrix2String(defaultPixels)
+            pixels: matrix2String(defaultCanvas)
         });
-        const prevPixels = string2Matrix(data.pixels);
+        const prevCanvas = string2Matrix(data.pixels);
         for (let y = 0; y < size.height; y++) {
             for (let x = 0; x < size.height; x++) {
-                defaultPixels[y][x] = typeof prevPixels[y] !== "undefined" ? (_a = prevPixels[y][x]) !== null && _a !== void 0 ? _a : -1 : -1;
+                defaultCanvas[y][x] = typeof prevCanvas[y] !== "undefined" ? (_a = prevCanvas[y][x]) !== null && _a !== void 0 ? _a : -1 : -1;
             }
         }
-        return defaultPixels;
+        return defaultCanvas;
     }
-    async savePixels() {
-        const pixels = this.app.pixels;
+    async saveCanvas() {
+        const canvas = this.app.canvas;
         return await this.updateDocument("canvas", {
-            pixels: matrix2String(pixels)
+            pixels: matrix2String(canvas)
         });
     }
     async loadUser(id) {

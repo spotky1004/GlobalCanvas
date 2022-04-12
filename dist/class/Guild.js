@@ -59,7 +59,7 @@ class Guild {
         if (errorOccured)
             return;
         let wasSendMessageSuccess = false;
-        const message = await channel.send("```\nLoading\n```")
+        const message = await channel.send("```\nOn Maintenance\n```")
             .then(message => {
             wasSendMessageSuccess = true;
             return message;

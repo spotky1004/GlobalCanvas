@@ -37,21 +37,18 @@ class GuildCaches {
         this.updateAllMessage();
     }
     updateMessage(guild) {
-        guild;
-        // const message = guild.connectedMessage;
-        // if (
-        //   message === null ||
-        //   message.deleted
-        // ) {
-        //   return false;
-        // }
-        // message.edit(this.messageOptions);
-        // return true;
+        const message = guild.connectedMessage;
+        if (message === null ||
+            message.deleted) {
+            return false;
+        }
+        message.edit(this.messageOptions);
+        return true;
     }
     updateAllMessage() {
-        // for (const id in this.cache) {
-        //   this.updateMessage(this.cache[id]);
-        // }
+        for (const id in this.cache) {
+            this.updateMessage(this.cache[id]);
+        }
     }
 }
 export default GuildCaches;

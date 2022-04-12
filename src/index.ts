@@ -73,25 +73,21 @@ client.on("messageCreate", async (message) => {
 });
 
 client.on("interactionCreate", async (interaction) => {
-  interaction;
-  // try {
-  //   if (interaction.isCommand()) {
-  //     const isCommandVaild = handlers.command(app, interaction);
-  //     if (!isCommandVaild) {
-  //       await interaction.reply({ content: "Invaild command", ephemeral: true });
-  //     }
-  //   }
-  // }  catch (e) { console.log(e); }
+  try {
+    if (interaction.isCommand()) {
+      const isCommandVaild = handlers.command(app, interaction);
+      if (!isCommandVaild) {
+        await interaction.reply({ content: "Invaild command", ephemeral: true });
+      }
+    }
+  }  catch (e) { console.log(e); }
 });
 
 setInterval(() => {
   app.save();
   if (client.user) {
     getRandomTrivia;
-    // client.user.setActivity(getRandomTrivia({ app, client }), {
-    //   type: "WATCHING"
-    // });
-    client.user.setActivity("Maintenance for 10~30 hours", {
+    client.user.setActivity(getRandomTrivia({ app, client }), {
       type: "WATCHING"
     });
   }

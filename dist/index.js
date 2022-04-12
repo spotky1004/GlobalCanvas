@@ -5,7 +5,7 @@ import Discord from "discord.js";
 import App from "./class/App.js";
 import commands from "./commands/index.js";
 import registerCommands from "./registerCommands.js";
-import { data, log } from "./db.js";
+import { data as dataCollection, log as logCollection } from "./db.js";
 import * as handlers from "./handlers/index.js";
 import getRandomTrivia from "./util/getRandomTrivia.js";
 const TOKEN = process.env.TOKEN;
@@ -28,8 +28,8 @@ const app = new App({
         fillCooldown: Number((_c = process.env.COOLDOWN) !== null && _c !== void 0 ? _c : 180000),
     },
     collections: {
-        data,
-        log
+        data: dataCollection,
+        log: logCollection
     },
 });
 client.on("ready", async () => {

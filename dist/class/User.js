@@ -30,6 +30,7 @@ class User {
         await interaction.editReply(messageOptions).catch(e => e);
     }
     async fillPixel(interaction) {
+        var _a;
         const params = getSlashParams(interaction, {
             color: { type: "string" },
             x: { type: "number" },
@@ -38,7 +39,7 @@ class User {
         const time = new Date().getTime();
         const fillCooldown = this.app.config.fillCooldown;
         if (time - this.data.lastFill > fillCooldown) {
-            this.app.fillPixel(interaction.user.id, getIdxByColorName(params.color), params.x - 1, params.y - 1);
+            this.app.fillPixel(interaction.user.id, (_a = interaction.guildId) !== null && _a !== void 0 ? _a : "-1", getIdxByColorName(params.color), params.x - 1, params.y - 1);
             this.data.lastFill = time;
             this.replyInteraction(interaction, {
                 content: "Done!"
@@ -54,6 +55,7 @@ class User {
         }
     }
     async zoomIn(interaction) {
+        var _a;
         const params = getSlashParams(interaction, {
             x: { type: "number" },
             y: { type: "number" },
@@ -77,7 +79,14 @@ class User {
                     new Discord.MessageAttachment(this.app.canvas.getImage(range.from, range.to), "canvas.png")
                 ]
             });
-            this.app.logger.addZoomLog(interaction.user.id, params.x, params.y, params.width, params.height);
+            this.app.logger.addLog("Zoom", {
+                userId: interaction.user.id,
+                x: params.x,
+                y: params.y,
+                width: params.width,
+                height: params.height,
+                guildId: (_a = interaction.guildId) !== null && _a !== void 0 ? _a : "-1",
+            });
         }
         else {
             this.replyInteraction(interaction, {

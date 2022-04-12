@@ -63,7 +63,11 @@ class Guild {
       content: "Done!",
       ephemeral: true
     });
-    this.app.logger.addConnectLog(interaction.user.id, interaction.guildId, channel.id);
+    this.app.logger.addLog("Connect", {
+      userId: interaction.user.id,
+      channelId: interaction.channelId,
+      guildId: interaction.guildId,
+    });
     return;
   }
 

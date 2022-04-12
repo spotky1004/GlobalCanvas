@@ -39,14 +39,20 @@ class App {
         await this.logger.save();
         this.saving = false;
     }
-    fillPixel(authorId, colorIdx, x, y) {
+    fillPixel(userId, guildId, colorIdx, x, y) {
         const result = this.canvas.fillPixel(colorIdx, x, y);
         if (result) {
             this.pixels[y][x] = colorIdx;
             this.guildCaches.updateMessageOptions();
             const color = getColorByIdx(colorIdx);
             if (color !== null) {
-                this.logger.addFillLog(authorId, color, x, y);
+                this.logger.addLog("Fill", {
+                    x,
+                    y,
+                    color,
+                    userId,
+                    guildId,
+                });
             }
         }
         return result;

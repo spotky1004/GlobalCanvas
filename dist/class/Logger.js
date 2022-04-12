@@ -3,7 +3,7 @@ class Logger {
         this.app = app;
         this.collection = collection;
         this.loggingIdx = null;
-        this.logCache = [];
+        this.toLog = [];
         this.setLoggingIdx();
     }
     async setLoggingIdx() {
@@ -18,31 +18,21 @@ class Logger {
     async save() {
         if (this.loggingIdx === null)
             return;
-        for (let i = 0; i < this.logCache.length; i++) {
-            const cache = this.logCache[i];
-            await this.saveLog(cache[0], cache[1]);
+        for (const cache of this.toLog) {
+            await this.saveLog(cache);
         }
-        await this.collection.updateOne({ _id: "loggingIdx" }, { $set: { idx: this.loggingIdx.toString() } }, { upsert: true });
-        this.logCache = [];
+        await this.collection.updateOne({ _id: "loggingIdx" }, { $set: { idx: this.loggingIdx } }, { upsert: true });
+        this.toLog = [];
     }
-    async saveLog(toLog, time) {
+    async saveLog(toLog) {
         if (this.loggingIdx === null)
             return;
-        const data = { data: toLog, time };
-        await this.collection.updateOne({ _id: this.loggingIdx.toString() }, { $set: data }, { upsert: true });
+        await this.collection.updateOne({ _id: this.loggingIdx.toString() }, { $set: toLog }, { upsert: true });
         this.loggingIdx++;
     }
-    addLog(toLog) {
-        this.logCache.push([toLog, new Date().getTime()]);
-    }
-    addFillLog(userId, colorHex, x, y) {
-        this.addLog(`[Fill] ${colorHex} (${x}, ${y}) [By ${userId}]`);
-    }
-    addConnectLog(userId, guildId, channelId) {
-        this.addLog(`[Connect] Guild ${guildId} -> Channel ${channelId} [By ${userId}]`);
-    }
-    addZoomLog(userId, x, y, width, height) {
-        this.addLog(`[Zoom] x: ${x}, y: ${y}, width: ${width}, height: ${height} [By ${userId}]`);
+    addLog(type, toLog) {
+        toLog = Object.assign(Object.assign({}, toLog), { type, time: new Date().getTime() });
+        this.toLog.push(toLog);
     }
 }
 export default Logger;

@@ -7,5 +7,5 @@ const dbName = process.env.MONGODB_DB_NAME;
 await client.connect();
 const db = client.db(dbName);
 const data = db.collection("data");
-const log = db.collection("fill-log");
-export { data, log };
+const log = db.collection("log");
+export { data, log, };

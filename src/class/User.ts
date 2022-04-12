@@ -57,6 +57,7 @@ class User {
     if (time - this.data.lastFill > fillCooldown) {
       this.app.fillPixel(
         interaction.user.id,
+        interaction.guildId ?? "-1",
         getIdxByColorName(params.color),
         params.x - 1,
         params.y - 1
@@ -101,7 +102,14 @@ class User {
           new Discord.MessageAttachment(this.app.canvas.getImage(range.from, range.to), "canvas.png")
         ]
       });
-      this.app.logger.addZoomLog(interaction.user.id, params.x, params.y, params.width, params.height);
+      this.app.logger.addLog("Zoom", {
+        userId: interaction.user.id,
+        x: params.x,
+        y: params.y,
+        width: params.width,
+        height: params.height,
+        guildId: interaction.guildId ?? "-1",
+      });
     } else {
       this.replyInteraction(interaction, {
         content: "Invaild zoom range!"

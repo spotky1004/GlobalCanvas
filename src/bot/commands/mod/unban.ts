@@ -23,7 +23,14 @@ const commandData: CommandData = {
     });
     const result = await app.saveManager.unbanUser(params.id);
 
-    if (result) await interaction.editReply("Done!");
+    if (result){
+      await interaction.editReply("Done!");
+      app.logger.addLog("Unban", {
+        authorId: interaction.user.id,
+        guildId: interaction.guildId as string,
+        userId: params.id,
+      });
+    }
     return result;
   },
   ephemeral: false,

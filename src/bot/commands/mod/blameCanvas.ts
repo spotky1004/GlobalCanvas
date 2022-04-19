@@ -37,6 +37,10 @@ const commandData: CommandData = {
         new Discord.MessageAttachment(canvas.getImage(undefined, undefined, true), "canvas.png")
       ]
     }).catch(e => e);
+    app.logger.addLog("BlameCanvas", {
+      authorId: interaction.user.id,
+      guildId: interaction.guildId as string,
+    });
     return true;
   },
   ephemeral: false,

@@ -17,8 +17,14 @@ const commandData = {
             id: { type: "string" }
         });
         const result = await app.saveManager.banUser(params.id);
-        if (result)
+        if (result) {
             await interaction.editReply(`Done! id: \`${params.id}\``);
+            app.logger.addLog("Ban", {
+                authorId: interaction.user.id,
+                guildId: interaction.guildId,
+                userId: params.id,
+            });
+        }
         return result;
     },
     ephemeral: false

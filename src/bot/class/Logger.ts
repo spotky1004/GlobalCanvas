@@ -3,44 +3,10 @@ import { getIdxByColor } from "../colors.js";
 import type App from "./App.js";
 import type { Size } from "./Canvas.js";
 import type mongodb from "mongodb";
-
-interface FillLogSchema {
-  type?: "Fill";
-  time?: number;
-  color: string;
-  x: number;
-  y: number;
-  userId: string;
-  guildId: string;
-  hidden?: boolean | null;
-}
-interface ZoomLogSchema {
-  type?: "Zoom";
-  time?: number;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  userId: string;
-  guildId: string;
-}
-interface ConnectLogSchema {
-  type?: "Connect";
-  time?: number;
-  userId: string;
-  guildId: string;
-  channelId: string;
-}
+import type { AnyLogSchema, LogSchemas, FillLogSchema } from "../typings/LogTypings.js";
 
 type LogCursorDocument<T, U extends object | never> = ({ _id: T } & U)[];
 type LogCursorFn<T, U extends object | never> = (count: number) => Promise<LogCursorDocument<T, U> | null>;
-
-interface LogSchemas {
-  "Fill": FillLogSchema;
-  "Zoom": ZoomLogSchema;
-  "Connect": ConnectLogSchema;
-}
-type AnyLogSchema = LogSchemas[keyof LogSchemas];
 
 type Collection = mongodb.Collection<mongodb.Document>;
 

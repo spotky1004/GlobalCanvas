@@ -23,7 +23,15 @@ const commandData = {
         });
         const blameData = await app.logger.createUserIdBlameMatrix(app.config.size);
         const { x, y } = params;
-        await interaction.editReply(`(${x}, ${y}) => ${blameData[y - 1] ? blameData[y - 1][x - 1] : undefined}`).catch(e => e);
+        const blamedId = blameData[y - 1] ? blameData[y - 1][x - 1] : "-1";
+        await interaction.editReply(`(${x}, ${y}) => ${blamedId}`).catch(e => e);
+        app.logger.addLog("BlamePixel", {
+            authorId: interaction.user.id,
+            guildId: interaction.guildId,
+            blamedId: blamedId,
+            x: params.x,
+            y: params.y,
+        });
         return true;
     },
     ephemeral: false,

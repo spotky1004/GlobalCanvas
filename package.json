@@ -9,8 +9,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start-dev": "cross-env NODE_ENV=development node --no-deprecation ./dist/index.js",
-    "start": "npm i && cross-env NODE_ENV=production node --no-deprecation ./dist/index.js",
+    "start-bot-dev": "cross-env NODE_ENV=development node --no-deprecation ./dist/bot/index.js",
+    "start-bot": "npm i && cross-env NODE_ENV=production node --no-deprecation ./dist/bot/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "spotky1004",

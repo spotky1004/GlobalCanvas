@@ -35,7 +35,7 @@ const slashCommand = new SlashCommandBuilder()
       .setDescription("display grid")
   )
 
-const commandData: CommandData = {
+const commandData: CommandData<typeof commandName> = {
   isModCommand: false,
   slashCommand,
   commandName,

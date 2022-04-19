@@ -11,10 +11,10 @@ export interface CommandHandlerOptions {
 
 export type CommandHandler = (options: CommandHandlerOptions) => Promise<boolean>;
 
-export interface CommandData {
+export interface CommandData<T extends string> {
   isModCommand: boolean;
   slashCommand: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
-  commandName: string;
+  commandName: T;
   handler: CommandHandler;
   ephemeral?: boolean;
 }

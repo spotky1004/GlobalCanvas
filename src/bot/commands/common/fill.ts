@@ -32,7 +32,7 @@ const slashCommand = new SlashCommandBuilder()
       .setRequired(true)
   );
 
-const commandData: CommandData = {
+const commandData: CommandData<typeof commandName> = {
   isModCommand: false,
   slashCommand,
   commandName,

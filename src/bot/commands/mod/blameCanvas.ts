@@ -10,7 +10,7 @@ const slashCommand = new SlashCommandBuilder()
   .setName(commandName)
   .setDescription("Display canvas colors as hashed user id");
 
-const commandData: CommandData = {
+const commandData: CommandData<typeof commandName> = {
   isModCommand: true,
   slashCommand,
   commandName,

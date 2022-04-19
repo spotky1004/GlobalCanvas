@@ -6,7 +6,7 @@ const slashCommand = new SlashCommandBuilder()
   .setName(commandName)
   .setDescription("Set GlobalCanvas channel (Requires channel)")
 
-const commandData: CommandData = {
+const commandData: CommandData<typeof commandName> = {
   isModCommand: false,
   slashCommand,
   commandName,

@@ -50,9 +50,9 @@ const commandNames = {
   common: Object.keys(commands.commonCommands),
   mod: Object.keys(commands.modCommands)
 };
-function isCommonCommandName(commandName: string): commandName is keyof typeof commands["commonCommands"] {
+function isCommonCommandName(commandName: string): commandName is typeof commands["commonCommands"][keyof typeof commands["commonCommands"]]["commandName"] {
   return commandNames.common.includes(commandName);
 }
-function isModCommandName(commandName: string): commandName is keyof typeof commands["modCommands"] {
+function isModCommandName(commandName: string): commandName is typeof commands["modCommands"][keyof typeof commands["modCommands"]]["commandName"] {
   return commandNames.mod.includes(commandName);
 }

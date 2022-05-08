@@ -16,7 +16,7 @@ const client = new Discord.Client({
         "GUILD_INTEGRATIONS",
         "GUILD_PRESENCES",
         "GUILDS"
-    ]
+    ],
 });
 const size = {
     width: Number((_a = process.env.WIDTH) !== null && _a !== void 0 ? _a : "0"),
@@ -50,10 +50,9 @@ client.on("ready", async () => {
 client.on("guildCreate", async (guild) => {
     try {
         registerCommands({
-            clientId: process.env.CLIENT_ID,
             guildId: guild.id,
             commands: commandJSON.commonCommands,
-            token: TOKEN
+            client
         });
     }
     catch (_a) { }

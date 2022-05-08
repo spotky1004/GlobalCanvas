@@ -1,9 +1,9 @@
-import { REST } from "@discordjs/rest";
-import { Routes } from "discord-api-types/v9";
 ;
-export default function registerCommands(options) {
-    const rest = new REST({ version: "9" }).setToken(options.token);
-    rest.put(Routes.applicationGuildCommands(options.clientId, options.guildId), { body: options.commands })
-        .then(() => console.log(`Register commands done to guild: ${options.guildId}`))
-        .catch(console.error);
+export default async function registerCommands(options) {
+    const guild = options.client.guilds.cache.get(options.guildId);
+    if (guild) {
+        for (const command of options.commands) {
+            await guild.commands.create(command).catch(e => e);
+        }
+    }
 }

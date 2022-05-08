@@ -11,7 +11,7 @@ interface ReadyHandlerOptions {
 }
 
 export default async function readyHandler(options: ReadyHandlerOptions) {
-  const { client, token, commonCommands, modCommands, app } = options;
+  const { client, commonCommands, modCommands, app } = options;
   
   const guilds = await client.guilds.fetch();
   guilds.each(async (guild) => {
@@ -23,10 +23,9 @@ export default async function readyHandler(options: ReadyHandlerOptions) {
       commandsToRegister = commandsToRegister.concat(modCommands);
     }
     registerCommands({
-      clientId: process.env.CLIENT_ID as string,
       guildId,
       commands: commandsToRegister,
-      token
+      client
     });
 
     if (guildCache.data.connectedChannelId !== "-1") {

@@ -1,18 +1,17 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { REST } from "@discordjs/rest";
-import { Routes } from "discord-api-types/v9";
+import type Discord from "discord.js";
+import type { SlashCommandBuilder } from "@discordjs/builders";
 
 export interface RegisterCommandsOptions {
-  token: string;
-  clientId: string;
+  client: Discord.Client;
   guildId: string;
   commands: ReturnType<SlashCommandBuilder["toJSON"]>[];
 };
 
-export default function registerCommands(options: RegisterCommandsOptions) {
-  const rest = new REST({ version: "9" }).setToken(options.token);
-  
-  rest.put(Routes.applicationGuildCommands(options.clientId, options.guildId), { body: options.commands })
-    .then(() => console.log(`Register commands done to guild: ${options.guildId}`))
-    .catch(console.error);
+export default async function registerCommands(options: RegisterCommandsOptions) {
+  const guild = options.client.guilds.cache.get(options.guildId);
+  if (guild) {
+    for (const command of options.commands) {
+      await guild.commands.create(command as any).catch(e => e);
+    } 
+  }
 }

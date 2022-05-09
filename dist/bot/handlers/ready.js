@@ -15,10 +15,13 @@ export default async function readyHandler(options) {
             client
         });
         if (guildCache.data.connectedChannelId !== "-1") {
-            const channel = await client.channels.fetch(guildCache.data.connectedChannelId);
-            if (channel !== null && channel.type === "GUILD_TEXT") {
-                guildCache.connectChannel(channel);
+            try {
+                const channel = await client.channels.fetch(guildCache.data.connectedChannelId);
+                if (channel !== null && channel.type === "GUILD_TEXT") {
+                    guildCache.connectChannel(channel);
+                }
             }
+            catch (_a) { }
         }
     });
 }
